@@ -1,9 +1,10 @@
 const express=require('express')
 const bodyParser=require('body-parser')
 const morgan=require('morgan')
-const multer  = require('multer')
-const path=require('path')
+// const multer  = require('multer')
+// const path=require('path')
 const cors=require('cors')
+
 const mongoose=require('mongoose')
 require('dotenv').config
 const api=process.env.API
