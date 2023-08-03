@@ -25,7 +25,7 @@ exports.getSingleOrders=async(req,res)=>{
 
 exports.postCategory=async(req,res)=>{
     try{
-        const orderItemIds= Promise.all(req.body.orderItems.map(async orderItem=>{
+        const orderItemIds= Promise.all(req.body.orderItems.map(async (orderItem)=>{
             let orderItemModel=new OrderItems({
                 quantity:orderItem.quantity,
                 product:orderItem.product
@@ -35,6 +35,14 @@ exports.postCategory=async(req,res)=>{
         }))
         let orderItemIdsResolve=await orderItemIds
 
+        let totalPrice=await Promise.all(orderItemIdsResolve.map(async (orderItemId)=>{
+            const orderItem=await OrderItems.findById(orderItemId).populate('price');
+            const totalPrice=orderItem.product.price*orderItem.quantity;
+            return totalPrice;
+        }))
+
+        const totalPrices=totalPrice.reduce((sum,ele)=>sum+=ele,0)
+
         let order=await new Orders({
             orderItems:orderItemIdsResolve,
             shippingAddress1:req.body.shippingAddress1,
@@ -43,7 +51,7 @@ exports.postCategory=async(req,res)=>{
             zip:req.body.zip,
             phone:req.body.phone,
             status:req.body.status,
-            totalPrice:req.body.totalPrice,
+            totalPrice:totalPrices,
             user:req.body.user,
             dateOrdered:req.body.dateOrdered,
         })
