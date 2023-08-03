@@ -1,7 +1,7 @@
 const mongoose=require('mongoose')
 
 const orderSchema=mongoose.Schema({
-    quantity:{
+    orderItems:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"OrderItems",
         required:true
