@@ -69,6 +69,33 @@ exports.postCategory=async(req,res)=>{
    
 }
 
+exports.getTotalSales=async(req,res)=>{
+    const totalSales=await Orders.aggregate([
+       {
+        $group:{_id:null,totalsales:{$sum:'$totalPrice'}}
+       } 
+    ])
+    if(!totalSales){
+        return res.status(404).send("orders cannot be generated")
+    }
+    res.send({totalSales:totalSales.pop().totalsales})
+}
+
+exports.getOrderCount=async(req,res)=>{
+    try{
+        const orderCount=await Orders.countDocuments('_id') ;
+        if(!orderCount){
+            res.status(500).json({success:false})
+        }
+    res.json({count:orderCount})
+    }catch(e){
+        res.status(400).json({error:e})
+        console.log(e)
+    }  
+}
+
+
+
 exports.deleteOrders=async(req,res)=>{
     try{
         const {id}=req.params
@@ -106,3 +133,14 @@ exports.updateOrders=async(req,res)=>{
     }
 }
 
+
+exports.getUserOrders=async(req,res)=>{
+    const UserOrderList=await Orders.find({user:req.params.id}).populate({
+        path:'orderItems',populate:{
+            path:'product',populate:'category'}
+        }).sort({'dateOrdered':-1})
+    if(!UserOrderList){
+        res.status(500).json({success:false})
+   }
+   res.send(UserOrderList)
+}
