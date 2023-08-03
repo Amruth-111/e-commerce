@@ -5,6 +5,7 @@ const morgan=require('morgan')
 // const path=require('path')
 const cors=require('cors')
 const ejwt=require('./middleware/auth')
+const errorHandler=require('./middleware/error_handler')
 
 const mongoose=require('mongoose')
 require('dotenv').config
@@ -22,6 +23,7 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
 app.use(ejwt())
+app.use(errorHandler)
 
 app.use(`${api}/products`,productsRoutes)
 app.use(`${api}/categories`,categoriesRoutes)
