@@ -4,6 +4,7 @@ const morgan=require('morgan')
 // const multer  = require('multer')
 // const path=require('path')
 const cors=require('cors')
+const ejwt=require('./middleware/auth')
 
 const mongoose=require('mongoose')
 require('dotenv').config
@@ -20,6 +21,7 @@ const app=express()
 app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
+app.use(ejwt())
 
 app.use(`${api}/products`,productsRoutes)
 app.use(`${api}/categories`,categoriesRoutes)
