@@ -23,7 +23,7 @@ exports.getSingleOrders=async(req,res)=>{
    res.send(order)
 }
 
-exports.postCategory=async(req,res)=>{
+exports.postOrders=async(req,res)=>{
     try{
         const orderItemIds= Promise.all(req.body.orderItems.map(async (orderItem)=>{
             let orderItemModel=new OrderItems({

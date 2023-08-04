@@ -1,6 +1,8 @@
 
 const express=require('express')
 const routes=express.Router()
+const multer  = require('multer')
+// const path=require('path')
 
 const products=require('../controllers/products')
 
@@ -13,7 +15,7 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const isValidFile=FILE_TYPE_MAP[file.mimetype]
         let uploadError=new Error('invalid image type')
-        if(isValid){
+        if(isValidFile){
             uploadError=null
         }
       cb(uploadError, 'public/uploads'); // Files will be stored in the 'uploads' directory

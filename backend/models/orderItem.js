@@ -13,10 +13,10 @@ const orderItemSchema=mongoose.Schema({
 
 });
 
-orderSchema.virtual('id').get(function(){
+orderItemSchema.virtual('id').get(function(){
     this._id.toHexString();
 });
-orderSchema.set('toJSON',{
+orderItemSchema.set('toJSON',{
     virtuals:true
 });
 
