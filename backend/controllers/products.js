@@ -5,7 +5,13 @@ const mongoose=require('mongoose')
 
 exports.postProduct=async(req,res)=>{
     try{
+        const fileName=req.file.filename
+        const basePath=`${req.protocol}://${req.get('host')}/public/upload/`
         const category=await Category.findById(req.body.category)
+        const file=req.file
+        if(!file){
+            return res.status(404).json({message:"file doesnot exist"})
+        }
         if(!category){
             return res.status(404).json({message:"category doesnot exist"})
         }
@@ -13,7 +19,7 @@ exports.postProduct=async(req,res)=>{
             name: req.body.name,
             description: req.body.description,
             richDescription: req.body.richDescription,
-            image: req.body.image,// "http://localhost:8000/public/upload/image-2323232"
+            image:` ${basePath}${fileName}`,//"http://localhost:8000/public/upload/image-2323232"
             brand: req.body.brand,
             price: req.body.price,
             category: req.body.category,
@@ -157,3 +163,39 @@ exports.getFeaturedProduct=async(req,res)=>{
     }  
 }
 
+exports.galleryImagesProduct=async(req,res)=>{
+    try{
+        if(!mongoose.isValidObjectId){
+            return res.status(404).json({message:"product doesnot exist"})
+        }
+        // const fileName=req.file.filename
+        const id =req.params.id
+        const files=req.files
+        let imagesPath=[];
+        const basePath=`${req.protocol}://${req.get('host')}/public/upload/`
+        if(files){
+            files.map(file=>{
+                imagesPath.push(`${basePath}${file.fileName}`)
+            })
+        }
+        
+        const product=await Product.findByIdAndUpdate(id,{
+            
+            images: req.body.imagesPath,// "http://localhost:8000/public/upload/image-2323232"
+            
+           
+        }, {new:true}//indicates taht we want to return new updated data
+        )
+        
+        
+        if(!product){
+            res.status(401).json({result:"product cannot be created"})
+        }
+        // res.status(201).json({result:category})
+        res.send(product) 
+    }catch(e){
+
+    }
+}
+
+  
